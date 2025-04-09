@@ -1,0 +1,35 @@
+
+ul {
+    list-style-type: none;
+    padding: 0;
+
+    li {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        &:first-child {
+            margin-top: 1.5rem;
+        }
+    }
+}
+  
+@media (min-width: 768px) {
+    ul {
+        width: 50%;
+        margin: auto;
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            &:hover {
+                background-color: #f8f9fa;
+            }
+        }
+    }
+}
+  

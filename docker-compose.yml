@@ -1,0 +1,53 @@
+version: '3.1'
+
+services: 
+  mongo:
+    image: mongo
+    container_name: mongo_db
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    volumes:
+      - mongo_data:/data/db
+      - ./init-mongo:/docker-entrypoint-initdb.d
+    networks:
+      - app_network
+  
+  nodejs-app: 
+    build: ./cars-api
+    container_name: nodejs-app
+    restart: always
+    ports: 
+      - "3001:3001"
+    depends_on:
+      - mongo
+    env_file:
+      - ./cars-api/.env
+    volumes: 
+      - ./cars-api:/usr/src/app
+      - /usr/src/app/node_modules
+    networks: 
+      - app_network
+
+  angular-app:
+    build: ./cars-app
+    container_name: angular-app
+    restart: always
+    ports: 
+      - "4200:4200"
+    volumes:
+      - ./cars-app:/app
+      - /app/node_modules
+    depends_on:
+      - nodejs-app
+    networks:
+      - app_network
+
+volumes:
+  mongo_data:
+
+networks:
+  app_network:

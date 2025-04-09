@@ -1,0 +1,36 @@
+stages:
+- test
+- build
+ 
+include:
+  - local: ci/.build.yml
+ 
+run_tests:
+  stage: test
+  image: node:20
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop"
+    - changes:
+      - package*.json
+      - '**/*.js'
+  script:
+    - npm install
+    - chmod +x ./
+    - npm test
+ 
+ 
+build_app_staging:
+  extends: .build-job
+  environment: staging
+  variables:
+    TARGET_IMAGE_TAG: $CI_COMMIT_SHA
+  only:
+    - develop
+ 
+build_app_prod:
+  extends: .build-job
+  variables:
+    TARGET_IMAGE_TAG: $CI_COMMIT_TAG
+  environment: Prod
+  only:
+    - tags

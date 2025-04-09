@@ -1,0 +1,10 @@
+.build-job:
+  stage: build
+  image: quay.io/buildah/stable
+  variables:
+    TARGET_IMAGE_NAME: $CI_REGISTRY_IMAGE
+  before_script:
+    - buildah login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:
+    - buildah bud -t $TARGET_IMAGE_NAME:$TARGET_IMAGE_TAG .
+    - buildah push $TARGET_IMAGE_NAME:$TARGET_IMAGE_TAG
